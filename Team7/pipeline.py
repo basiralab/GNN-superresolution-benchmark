@@ -6,10 +6,8 @@ import pandas as pd
 from globals import TORCH_DEVICE, COMPUTE_METRICS_FLAG, FULL_DATA, FULL_TARGETS
 from hyperparams import Hyperparams
 from model import GSRNet
-from preprocessing import get_unseen_test_dset, RANDOM_SEED
-from sklearn.model_selection import KFold
 from utils import pad_HR_adj, unpad
-from metrics import compute_metrics, plot_metrics_per_type
+from metrics import compute_metrics
 from MatrixVectorizer import MatrixVectorizer
 import networkx as nx
 from community import community_louvain
@@ -564,10 +562,6 @@ def test1(model, test_adj, test_labels, hps, num_fold):
 # mode = 'cluster'
 mode = 'random'
 train_all = True
-# fold_num = 1
-# run_experiment_fold1(FULL_DATA, FULL_TARGETS, 1, train_all, mode)
-# run_experiment_fold2(FULL_DATA, FULL_TARGETS, 2, train_all, mode)
-# run_experiment_fold3(FULL_DATA, FULL_TARGETS, 3, train_all, mode)
 
 hps = Hyperparams()
 
