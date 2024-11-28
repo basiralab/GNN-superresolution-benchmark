@@ -227,9 +227,6 @@ def evaluate(pred_matrices, gt_matrices, cal_graph=False):
     - A dictionary containing the evaluation metrics.
     """
 
-    # pred_matrices = pred_matrices.cpu().detach().numpy()
-    # gt_matrices = gt_matrices.cpu().detach().numpy()
-
     num_test_samples = gt_matrices.shape[0]
 
     # Initialize lists to store MAEs for each centrality measure
@@ -310,10 +307,7 @@ def evaluate(pred_matrices, gt_matrices, cal_graph=False):
         res = {
             "MAE": mae,
             "PCC": pcc,
-            "JSD": js_dis,
-            # "MAE_(BC)": avg_mae_bc,
-            # "MAE_(EC)": avg_mae_ec,
-            # "MAE_(PC)": avg_mae_pc
+            "JSD": js_dis
         }
 
     return res

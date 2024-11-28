@@ -21,9 +21,6 @@ def pad_HR_adj(label, split):
 
     # Create an identity matrix of the same size as the padded tensor
     identity = torch.eye(label_padded.size(0)).to(device)
-
-    # Add the identity matrix to the padded tensor to set diagonal elements to 1
-    # Assuming the operation intended is to ensure diagonal elements are set to 1 post padding
     label_padded = label_padded + identity
 
     return label_padded.type(torch.FloatTensor)
@@ -50,7 +47,7 @@ def antivectorize_df(adj_mtx_df, size):
     num_subject = adj_mtx_df.shape[0]
     adj_mtx = np.zeros(
         (num_subject, size, size)
-    )  # torch.zeros((num_subject, LR_size, LR_size))
+    )
     for i in range(num_subject):
         adj_mtx[i] = MatrixVectorizer.anti_vectorize(adj_mtx_df.iloc[i], size)
     return adj_mtx
