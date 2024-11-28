@@ -23,7 +23,6 @@ std_dev_values = combined_df.std()
 print("Average:\n", mean_values)
 print("Standard Deviation:\n", std_dev_values)
 
-
 combined_df.to_csv('combined_data_CLUSTER.csv')
 
 
