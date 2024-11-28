@@ -1,16 +1,13 @@
-from torch.utils.data import Dataset
 from MatrixVectorizer import MatrixVectorizer
 import pandas as pd
 import numpy as np
 import torch
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 from scipy.stats import pearsonr
 from scipy.spatial.distance import jensenshannon
 import networkx as nx
 from typing import Tuple
-import argparse
 import matplotlib.pyplot as plt
-
 
 LR_MAT_SIZE = 160
 HR_MAT_SIZE = 268
@@ -321,9 +318,7 @@ def plot_results(data, filename=None):
     primary_stds = [stds[labels.index(metric)] for metric in primary_metrics]
     secondary_stds = [stds[labels.index(metric)] for metric in secondary_metrics]
 
-    primary_avg_bars = axs[-1].bar(primary_metrics, primary_means, yerr=primary_stds, color=primary_color, capsize=5, alpha=0.5)
     ax2 = axs[-1].twinx()  # Create a second y-axis for averages
-    secondary_avg_bars = ax2.bar(secondary_metrics, secondary_means, yerr=secondary_stds, color=secondary_color, capsize=5, alpha=0.5)
     axs[-1].set_title('Avg. Across Folds')
     axs[-1].set_ylim(0, 0.8)
     ax2.set_ylim(0, 0.03)
