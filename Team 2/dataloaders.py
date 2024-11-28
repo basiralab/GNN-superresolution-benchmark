@@ -1,4 +1,4 @@
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from MatrixVectorizer import *
 import pandas as pd
 import torch
