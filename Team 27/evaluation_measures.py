@@ -1,11 +1,8 @@
 from MatrixVectorizer import MatrixVectorizer
 
 from sklearn.metrics import mean_absolute_error
-from scipy.stats import pearsonr
-from scipy.spatial.distance import jensenshannon
 import torch
 import networkx as nx
-import numpy as np
 
 # the following numbers do not reflect the provided dataset, just for an example
 num_test_samples = 20
@@ -57,27 +54,12 @@ for i in range(num_test_samples):
     mae_ec.append(mean_absolute_error(pred_ec_values, gt_ec_values))
     mae_pc.append(mean_absolute_error(pred_pc_values, gt_pc_values))
 
-    # Vectorize matrices
-    pred_1d_list.append(MatrixVectorizer.vectorize(pred_matrices[i]))
-    gt_1d_list.append(MatrixVectorizer.vectorize(gt_matrices[i]))
-
 # Compute average MAEs
 avg_mae_bc = sum(mae_bc) / len(mae_bc)
 avg_mae_ec = sum(mae_ec) / len(mae_ec)
 avg_mae_pc = sum(mae_pc) / len(mae_pc)
 
-# Concatenate flattened matrices
-pred_1d = np.concatenate(pred_1d_list)
-gt_1d = np.concatenate(gt_1d_list)
 
-# Compute metrics
-mae = mean_absolute_error(pred_1d, gt_1d)
-pcc = pearsonr(pred_1d, gt_1d)[0]
-js_dis = jensenshannon(pred_1d, gt_1d)
-
-print("MAE: ", mae)
-print("PCC: ", pcc)
-print("Jensen-Shannon Distance: ", js_dis)
 print("Average MAE betweenness centrality:", avg_mae_bc)
 print("Average MAE eigenvector centrality:", avg_mae_ec)
 print("Average MAE PageRank centrality:", avg_mae_pc)

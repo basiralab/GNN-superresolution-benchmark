@@ -1,7 +1,7 @@
 import argparse
 import numpy as np
 import torch
-import att_multidis_model.model, att_multidis_model.train
+import model, train
 from dataprocessor import DataProcessor as D
 
 
@@ -15,7 +15,7 @@ class BenchmarkUtil:
         Produce a final model using the basic arguments.
         """
         args = BenchmarkUtil.baseline_args()
-        model = att_multidis_model.model.AGSRNet(
+        model = model.AGSRNet(
             [0.9, 0.7, 0.6, 0.5],
             args
         )
@@ -23,7 +23,7 @@ class BenchmarkUtil:
 
     @staticmethod
     def get_att_dct_train_function():
-        return att_multidis_model.train.train
+        return train.train
 
 
     @staticmethod
@@ -36,7 +36,7 @@ class BenchmarkUtil:
         lr_train = D.load_data_matrices("data/lr_train.csv", 160)
         hr_train = D.load_data_matrices("data/hr_train.csv", 268)
 
-        loss, error = att_multidis_model.train.train(model, lr_train, hr_train, args)
+        loss, error = train.train(model, lr_train, hr_train, args)
 
         lr_test = D.load_data_matrices("data/lr_test.csv", 160)
 

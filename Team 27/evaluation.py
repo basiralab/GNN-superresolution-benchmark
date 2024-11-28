@@ -5,7 +5,7 @@ import numpy as np
 from os.path import exists
 from matplotlib import pyplot as plt
 import pandas as pd
-from lib.MatrixVectorizer import MatrixVectorizer as mv
+from MatrixVectorizer import MatrixVectorizer as mv
 from sklearn.metrics import mean_absolute_error
 from scipy.stats import pearsonr
 from scipy.spatial.distance import jensenshannon
@@ -13,7 +13,7 @@ import community.community_louvain as community_louvain
 import torch
 import networkx as nx
 import os
-from lib.MatrixVectorizer import MatrixVectorizer
+from MatrixVectorizer import MatrixVectorizer
 
 
 class EvaluationUtil:
