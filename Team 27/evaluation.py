@@ -1,4 +1,3 @@
-from sklearn import model_selection
 from sklearn.model_selection import LeaveOneOut
 from dataprocessor import DataProcessor as D
 from benchmark import BenchmarkUtil
@@ -17,7 +16,6 @@ import os
 from lib.MatrixVectorizer import MatrixVectorizer
 
 
-
 class EvaluationUtil:
     def __init__(self, random_seed=42):
         self.model = None
@@ -25,7 +23,6 @@ class EvaluationUtil:
         self.train_method = None
         self.random_seed = random_seed
         self.calculated_metrics = {}
-
 
 
     def get_att_multi_dct_model(self):
@@ -49,10 +46,6 @@ class EvaluationUtil:
 
         :param model_id: the identifier of the model
         """
-        def vectorize_symmetric_matrix(matrix):
-            """Vectorize a symmetric matrix"""
-            vectorizer = MatrixVectorizer()
-            return vectorizer.vectorize(matrix)
 
         def devectorize_symmetric_matrix(vector, size):
             """Devectorize a symmetric matrix"""

@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import matplotlib.pyplot as plt
 from .preprocessing import *
 from .model import *
 import torch.optim as optim
@@ -113,7 +112,6 @@ def train(model, subjects_adj, subjects_labels, args):
     optimizerG = optim.Adam(model.parameters(), lr=args.lr)
     optimizerD = optim.Adam(netD.parameters(), lr=args.lr)
     optimizerGD = optim.Adam(netGD.parameters(), lr=args.lr)
-    # optimizerLD = optim.Adam(netLD.parameters(), lr=args.lr)
 
     all_epochs_loss = []
     all_epochs_error = []
@@ -129,9 +127,7 @@ def train(model, subjects_adj, subjects_labels, args):
                 lr = torch.from_numpy(lr).type(torch.FloatTensor)
                 padded_hr = torch.from_numpy(hr).type(torch.FloatTensor)
 
-                #eig_val_hr, U_hr = torch.symeig(
-                #    padded_hr, eigenvectors=True, upper=True)
-                
+
                 eig_val_hr, U_hr = torch.linalg.eigh(
                     padded_hr, UPLO='U')
 

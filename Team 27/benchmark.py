@@ -1,7 +1,6 @@
 import argparse
 import numpy as np
 import torch
-
 import att_multidis_model.model, att_multidis_model.train
 from dataprocessor import DataProcessor as D
 
@@ -9,8 +8,6 @@ from dataprocessor import DataProcessor as D
 class BenchmarkUtil:
     def __init__(self):
         pass
-
-
 
     @staticmethod
     def get_att_dct_model():
@@ -27,7 +24,6 @@ class BenchmarkUtil:
     @staticmethod
     def get_att_dct_train_function():
         return att_multidis_model.train.train
-
 
 
     @staticmethod
@@ -48,7 +44,6 @@ class BenchmarkUtil:
         for lr in lr_test:
             lr = torch.from_numpy(lr).type(torch.FloatTensor)
             preds, _, _, _ = model(lr, 160, 320)
-            # basically the unpad() from preprocessing.py
             preds_unpad = preds[26:294, 26:294]
 
             preds_list.append(preds_unpad.detach().numpy())

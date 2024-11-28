@@ -1,7 +1,6 @@
 import numpy as np
 from lib.MatrixVectorizer import MatrixVectorizer as vectorizer
 
-
 class DataProcessor:
     def __init__(self):
         pass
