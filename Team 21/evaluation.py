@@ -1,5 +1,4 @@
-from provided_code.MatrixVectorizer import MatrixVectorizer
-
+from MatrixVectorizer import MatrixVectorizer
 import numpy as np
 from sklearn.metrics import mean_absolute_error
 from scipy.stats import pearsonr
