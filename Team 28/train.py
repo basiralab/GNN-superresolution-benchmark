@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-from my_files.evaluation import evaluate_all
 from preprocessing import *
 from model import *
 import torch.optim as optim

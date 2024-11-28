@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def weight_variable_glorot(output_dim):
 
     input_dim = output_dim

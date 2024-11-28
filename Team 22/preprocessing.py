@@ -6,7 +6,6 @@ import scipy.io
 path = ''
 roi_str = ''
 
-
 def pad_HR_adj(label, split):
 
     label = np.pad(label, ((split, split), (split, split)), mode="constant")
