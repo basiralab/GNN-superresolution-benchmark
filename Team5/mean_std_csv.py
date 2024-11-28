@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the CSV file
-file_path = '30-graph_gurus_evaluation/Cluster CV/metrics.csv'
+file_path = 'evaluation/Cluster CV/metrics.csv'
 #file_path = '5-derm.ai_evaluation/Cluster CV/metrics.csv'
 data = pd.read_csv(file_path)
 

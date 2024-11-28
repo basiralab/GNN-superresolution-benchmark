@@ -23,7 +23,7 @@ class KFold:
                 self.embeddings.append(np.load(f"{embeddings}_fold_{i}.npy", allow_pickle=True))
 
 
-    def obtain_derm_folds(self, i, *, with_validation, return_embeddings=False):
+    def obtain_folds(self, i, *, with_validation, return_embeddings=False):
         test_set = self.lr[i], self.hr[i]
         if return_embeddings:
             test_embeddings = self.embeddings[i]
@@ -54,42 +54,8 @@ class KFold:
                 return train_set[0], train_set[1], test_set[0], test_set[1], train_embeddings, test_embeddings
             else:
                 return train_set[0], train_set[1], test_set[0], test_set[1]
-            
 
-    def obtain_gurus_folds(self, i, *, with_validation, return_embeddings=False):
-        test_set = self.lr[i], self.hr[i]
-        if return_embeddings:
-            test_embeddings = self.embeddings[i]
-        if i == 0:
-            a, b = 1, 2
-        elif i == 1:
-            a, b = 0, 2
-        else:
-            a, b = 0, 1
-        if not with_validation:
-            train_set = self.lr[a] + self.lr[b], self.hr[a] + self.hr[b]
-            if return_embeddings:
-                train_embeddings = np.concatenate([self.embeddings[a], self.embeddings[b]])
-        else:
-            val_set = self.lr[a][-20:] + self.lr[b][-20:], self.hr[a][-20:] + self.hr[b][-20:]
-            train_set = self.lr[a][:-20] + self.lr[b][:-20], self.hr[a][:-20] + self.hr[b][:-20]
-            if return_embeddings:
-                val_embeddings = np.concatenate([self.embeddings[a][-20:], self.embeddings[b][-20:]])
-                train_embeddings = np.concatenate([self.embeddings[a][:-20], self.embeddings[b][:-20]])
-        if with_validation:
-            print(len(train_set[0]), len(train_set[1]), len(test_set[0]), len(test_set[1]), len(val_set[0]), len(val_set[1]))
-            if return_embeddings:
-                return train_set[0], train_set[1], val_set[0], val_set[1], train_embeddings, val_embeddings
-            else:
-                return train_set[0], train_set[1], val_set[0], val_set[1]
-        else:
-            if return_embeddings:
-                return train_set[0], train_set[1], test_set[0], test_set[1], train_embeddings, test_embeddings
-            else:
-                return train_set[0], train_set[1], test_set[0], test_set[1]
-
-
-    def derm_preprocessing(self):
+    def preprocessing(self):
         hr_trains = [None, None, None]
         lr_trains = [None, None, None]
 
@@ -102,22 +68,6 @@ class KFold:
 
         self.lr = lr_trains
         self.hr = hr_trains
-
-
-    def gurus_preprocessing(self, lr_matrix_size, hr_matrix_size):
-        def anti_vectorize_dataframe(mv, data, matrix_size):
-            adjacency_matrices = []
-
-            for index, row in data.iterrows():
-                vector = row.values
-                matrix = mv.anti_vectorize(vector, matrix_size)
-                adjacency_matrices.append(matrix)
-
-            return adjacency_matrices
-
-        for i in range(3):
-            self.lr[i] = anti_vectorize_dataframe(self.mv, self.lr[i], lr_matrix_size)
-            self.hr[i] = anti_vectorize_dataframe(self.mv, self.hr[i], hr_matrix_size)
 
 
 class MatrixVectorizer:
