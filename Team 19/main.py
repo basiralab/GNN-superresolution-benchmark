@@ -1,7 +1,6 @@
 from sklearn.model_selection import KFold
 import time
 import random
-from memory_profiler import profile
 import pandas as pd
 import scipy.io
 from scipy.io import loadmat

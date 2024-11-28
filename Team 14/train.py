@@ -1,14 +1,11 @@
 import torch
 import torch.nn as nn
 import numpy as np
-import matplotlib.pyplot as plt
 from preprocessing import pad_HR_adj
 from model import gaussian_noise_layer
 import copy
 from tqdm.notebook import tqdm
 from utils import get_device
-from evaluation_metric import evaluate_all
-
 
 device = get_device()
 
@@ -226,7 +223,6 @@ def test_gan(model, test_adj, test_labels, args, to_file=True):
                 np.fill_diagonal(hr, 1)
                 hr = torch.from_numpy(hr).type(torch.FloatTensor).to(device)
                 preds, _, _, _ = model(lr)
-                # evaluate_all(hr,preds)
                 predictions.append(preds)
                 
                 preds = preds.to(device)
@@ -237,5 +233,4 @@ def test_gan(model, test_adj, test_labels, args, to_file=True):
                 test_error.append(error.item())
 
                 i += 1
-    # print ("Test error MSE: ", np.mean(test_error))
     return np.mean(test_error), predictions
