@@ -191,7 +191,6 @@ class GraphLoong(nn.Module):
 
         z = self.hidden2
         z = (z + z.t())/2
-        # z = F.sigmoid(torch.matmul(self.hidden2, self.hidden2.t()))
         z = z.fill_diagonal_(1)
         
         return torch.abs(z), self.net_outs, self.start_gcn_outs, self.net_2_outs

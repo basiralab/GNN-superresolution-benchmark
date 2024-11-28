@@ -17,7 +17,6 @@ def seed_everything(seed=42):
     torch.backends.cudnn.benchmark = False
 
 def normalize_adj_torch(mx):
-    # mx = mx.to_dense()
     rowsum = mx.sum(1)
     r_inv_sqrt = torch.pow(rowsum, -0.5).flatten()
     r_inv_sqrt[torch.isinf(r_inv_sqrt)] = 0.
@@ -35,6 +34,5 @@ def pad_HR_adj(label, split):
 def unpad(data, split):
     idx_0 = data.shape[0]-split
     idx_1 = data.shape[1]-split
-    # print(idx_0,idx_1)
     train = data[split:idx_0, split:idx_1]
     return train
