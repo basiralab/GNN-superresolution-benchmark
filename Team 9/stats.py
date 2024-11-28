@@ -1,6 +1,4 @@
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 def collect_data(path):
     fold1 = pd.read_csv(path + 'randomCV_fold1.csv')
