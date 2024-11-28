@@ -4,11 +4,10 @@ from layers import *
 from ops import *
 from preprocessing import normalize_adj_torch
 import torch.nn.functional as F
-
-# +
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import numpy as np
 
 class GraphSAGELayer(nn.Module):
     def __init__(self, in_features, out_features, dropout, act=F.relu, aggregator_type='mean'):
@@ -40,12 +39,6 @@ class GraphSAGELayer(nn.Module):
             
         return output
 
-
-# +
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-
 class GINLayer(nn.Module):
     """Graph Isomorphism Network layer with an MLP and residual connections."""
     def __init__(self, in_features, out_features, mlp_layers=2, dropout=0.5):
@@ -67,9 +60,6 @@ class GINLayer(nn.Module):
         if self.residual:
             out = out + input  # Add the residual connection
         return out
-
-
-
 
 class AGSRNet(nn.Module):
     def __init__(self, ks, args):
@@ -104,9 +94,6 @@ class AGSRNet(nn.Module):
             z = z.fill_diagonal_(1)
 
         return torch.abs(z), self.net_outs, self.start_gcn_outs, self.outputs
-
-
-# -
 
 class Dense(nn.Module):
     def __init__(self, n1, n2, args):
