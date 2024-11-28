@@ -128,10 +128,6 @@ def train_graph_cyclegan(model, train_loader, val_loader=None, lr_G=0.0005, lr_D
     else:
         return None
 
-
-# The following function was added for looking for the early stopping point and make sure of fair comparison
-# between different models of the paper. The code is based on the original training function,
-# but not part of the original code.
 def train_graph_cyclegan_es(model, train_loader, val_loader=None, lr_G=0.0005, lr_D_A=0.0002, lr_D_B=0.0002, epochs=10,
                             device='cpu', fold_num=0):
     model.to(device)
@@ -246,7 +242,7 @@ def train_graph_cyclegan_es(model, train_loader, val_loader=None, lr_G=0.0005, l
                 ctr += 1
                 if ctr >= 10:
                     if epoch >= 99:
-                        print(f"Early stopping at epoch {epoch}!!!!!!!")
+                        print(f"Early stopping at epoch {epoch}")
                         es = epoch
                         break
                     else:

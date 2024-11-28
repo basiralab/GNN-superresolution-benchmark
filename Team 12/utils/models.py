@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-
 class GATLayer(nn.Module):
     def __init__(self, in_features, out_features, dropout=0.3, alpha=0.2, concat=True):
         super(GATLayer, self).__init__()
