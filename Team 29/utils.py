@@ -1,14 +1,12 @@
-from torch.utils.data import Dataset
 from MatrixVectorizer import MatrixVectorizer
 import pandas as pd
 import numpy as np
 import torch
-from sklearn.metrics import mean_squared_error, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 from scipy.stats import pearsonr
 from scipy.spatial.distance import jensenshannon
 import networkx as nx
 from typing import Tuple
-import argparse
 import matplotlib.pyplot as plt
 
 
@@ -290,40 +288,18 @@ def plot_results(data, filename=None):
     """
     
     data = np.array(data)
-    means = np.mean(data, axis=0)
-    stds = np.std(data, axis=0)
-
-    labels = ['MAE', 'PCC', 'ISD', 'MAE(PC)', 'MAE(EC)', 'MAE(BC)']
-    primary_metrics = ['MAE', 'PCC', 'ISD']
-    secondary_metrics = ['MAE(PC)', 'MAE(EC)', 'MAE(BC)']
-
-    primary_color = ['green', 'green', 'green']  # Colors for the primary metrics
-    secondary_color = ['blue', 'blue', 'blue']  # Colors for the secondary metrics
 
     fig, axs = plt.subplots(2, 2, figsize=(12, 8))
     axs = axs.flatten()
 
     for i, ax in enumerate(axs[:-1]):  # Exclude the last subplot for the average
-        primary_data = [data[i][labels.index(metric)] for metric in primary_metrics]
-        secondary_data = [data[i][labels.index(metric)] for metric in secondary_metrics]
-
-        primary_bars = ax.bar(primary_metrics, primary_data, color=primary_color, alpha=0.5)
         ax2 = ax.twinx()  # Create a second y-axis
-        secondary_bars = ax2.bar(secondary_metrics, secondary_data, color=secondary_color, alpha=0.5)
         ax.set_title(f'Fold {i + 1}')
         ax.set_ylim(0, 0.8)  # Adjust primary y-axis limits
         ax2.set_ylim(0, 0.03)  # Adjust secondary y-axis limits
         ax.tick_params(axis='x', rotation=45)
 
-    # Handle the averages and standard deviations in the last plot
-    primary_means = [means[labels.index(metric)] for metric in primary_metrics]
-    secondary_means = [means[labels.index(metric)] for metric in secondary_metrics]
-    primary_stds = [stds[labels.index(metric)] for metric in primary_metrics]
-    secondary_stds = [stds[labels.index(metric)] for metric in secondary_metrics]
-
-    primary_avg_bars = axs[-1].bar(primary_metrics, primary_means, yerr=primary_stds, color=primary_color, capsize=5, alpha=0.5)
     ax2 = axs[-1].twinx()  # Create a second y-axis for averages
-    secondary_avg_bars = ax2.bar(secondary_metrics, secondary_means, yerr=secondary_stds, color=secondary_color, capsize=5, alpha=0.5)
     axs[-1].set_title('Avg. Across Folds')
     axs[-1].set_ylim(0, 0.8)
     ax2.set_ylim(0, 0.03)
