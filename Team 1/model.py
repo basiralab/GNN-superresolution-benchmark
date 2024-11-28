@@ -7,18 +7,18 @@ from processing import *
 
 
 class GSRLayer(nn.Module):
-
     def __init__(self, hr_dim):
         super(GSRLayer, self).__init__()
 
         self.weights = torch.from_numpy(
-            weight_variable_glorot(hr_dim)).type(torch.FloatTensor)
+            weight_variable_glorot(hr_dim)
+        ).type(torch.FloatTensor)
         self.weights = torch.nn.Parameter(
-            data=self.weights, requires_grad=True)
+            data=self.weights, requires_grad=True
+        )
 
     def forward(self, A, X):
         with torch.autograd.set_detect_anomaly(True):
-
             lr_dim = A.shape[0]
             _, U_lr = torch.linalg.eigh(A, UPLO='U')
 
@@ -32,8 +32,9 @@ class GSRLayer(nn.Module):
             adj = f_d.fill_diagonal_(1)
 
             X = torch.mm(adj, adj.t())
-            X = (X + X.t())/2
+            X = (X + X.t()) / 2
             X = X.fill_diagonal_(1)
+
         return adj, torch.abs(X)
 
 
@@ -45,7 +46,8 @@ class GraphConvolution(nn.Module):
         self.dropout = dropout
         self.act = act
         self.weight = torch.nn.Parameter(
-            torch.FloatTensor(in_features, out_features))
+            torch.FloatTensor(in_features, out_features)
+        )
         self.reset_parameters()
 
     def reset_parameters(self):
@@ -58,31 +60,30 @@ class GraphConvolution(nn.Module):
         output = self.act(output)
         return output
 
-class SuperBLTGraph(nn.Module):
 
+class SuperBLTGraph(nn.Module):
     def __init__(self, args):
         super(SuperBLTGraph, self).__init__()
 
         self.lr_dim = args.lr_dim
         self.double_convolution = args.double_convolution
 
-        if args.double_convolution == False:
+        if not args.double_convolution:
             self.gc0 = GraphConvolution(args.lr_dim, args.hr_dim, args.dropout, act=F.relu)
         else:
             self.gc0_0 = GraphConvolution(args.lr_dim, args.hidden_dim, args.dropout, act=F.relu)
             self.gc0_1 = GraphConvolution(args.hidden_dim, args.hr_dim, args.dropout, act=F.relu)
+
         self.layer = GSRLayer(args.hr_dim)
         self.gc1 = GraphConvolution(args.hr_dim, args.hidden_dim, args.dropout, act=F.relu)
         self.gc2 = GraphConvolution(args.hidden_dim, args.hr_dim, args.dropout, act=F.tanh)
-      
 
     def forward(self, lr):
         with torch.autograd.set_detect_anomaly(True):
-           
             X = torch.eye(self.lr_dim).type(torch.FloatTensor)
             A = normalize_adj_torch(lr).type(torch.FloatTensor)
 
-            if self.double_convolution == False:
+            if not self.double_convolution:
                 self.gcnew_out = self.gc0(X, A)
             else:
                 X = self.gc0_0(X, A)
@@ -92,8 +93,8 @@ class SuperBLTGraph(nn.Module):
 
             self.hidden1 = self.gc1(self.Z, self.outputs)
             z = self.gc2(self.hidden1, self.outputs)
-        
-            z = (z + z.t())/2
+
+            z = (z + z.t()) / 2
             z = z.fill_diagonal_(0)
-            
+
         return z
