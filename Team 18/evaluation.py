@@ -4,8 +4,7 @@ import networkx as nx
 from scipy.stats import pearsonr
 from scipy.spatial.distance import jensenshannon
 from sklearn.metrics import mean_absolute_error
-from skimage.metrics import peak_signal_noise_ratio as psnr, structural_similarity as ssim
-import community.community_louvain as community_louvain  # Correct import
+import community.community_louvain as community_louvain
 import os
 
 def calculate_centralities(adj_matrix):

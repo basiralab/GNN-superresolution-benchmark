@@ -7,7 +7,6 @@ import pandas as pd
 from preprocessing import pad_HR_adj, unpad
 from utils.MatrixVectorizer import MatrixVectorizer
 
-
 mse = nn.MSELoss()
 mae = nn.L1Loss()
 

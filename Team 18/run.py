@@ -1,14 +1,14 @@
-from utils.reproducibility import random_seed, device  # import to fix seed
+from utils.reproducibility import device 
 import argparse
 import numpy as np
-import torch
 import torch.optim as optim
 from sklearn.model_selection import KFold
 from preprocessing import load_data
 from model import GSRGo
-from train import train, validate, predict_kaggle
-from utils.evaluation_measures import compute_evaluation_measures, plot_evaluation_measures, plot_validation_mae
-import matplotlib.pyplot as plt  # Import matplotlib for plotting
+from train import train, validate
+from utils.evaluation_measures import plot_validation_mae
+import matplotlib.pyplot as plt 
+from evaluation import evaluate_all
 
 class EarlyStopping:
     def __init__(self, patience=10, min_delta=0, min_epochs=100):
@@ -37,7 +37,7 @@ class EarlyStopping:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='GSR-Go')
+    parser = argparse.ArgumentParser(description='')
     parser.add_argument('--epochs', type=int, default=200, metavar='no_epochs', help='number of episode to train')#200
     parser.add_argument('--lr', type=float, default=0.0002, metavar='lr', help='learning rate')
     parser.add_argument('--splits', type=int, default=3, metavar='n_splits', help='no of cross validation folds')
@@ -112,7 +112,6 @@ if __name__ == "__main__":
             epoch = 0
             print(f"Fold: {fold_num+1} / {args.splits}")
             model_k = GSRGo(args).to(device)
-            
 
             # Train model with early stopping
             val_fn = lambda: validate(model_k, X[val_index], Y[val_index], args)
@@ -128,23 +127,15 @@ if __name__ == "__main__":
             predicted_hr_matrices_list.append(preds)
 
             val_loss = val_fn()[1]  # Assuming val_fn returns a tuple with (mse, mae, preds, gt)
-
-
             metrics_list.append(fold_metrics)
-
-            # Predict HR samples for validation set
-            # predict_kaggle(model_k, X[val_index], args, filename=f'predictions_fold_{fold_num+1}')
-
+            
             mse, mae, preds, gt = val_fn()
        
-          
             # Track the best model across folds
             if mae < min_mae:
                 min_mae = mae
                 model = model_k
         print(f"Best model MAE: {min_mae:.6f}")
-
-    
 
         # Plot validation MAEs for each fold
         plot_validation_mae([m['validation_mae'] for m in metrics_list])
@@ -159,20 +150,15 @@ if __name__ == "__main__":
         plt.savefig('training_loss_per_fold.png')
         plt.show()
 
-   
     else:
         # Train over the entire dataset
         train(model, optimizer, X, Y, args)
-
    
-    # Generate evaluation CSV file
-from evaluation import evaluate_all
-
 true_hr_matrices = np.concatenate(true_hr_matrices_list, axis=0)
 predicted_hr_matrices = np.concatenate(predicted_hr_matrices_list, axis=0)
 print("true.shape:",true_hr_matrices.shape)
 print("pred.shape:",predicted_hr_matrices.shape)
-evaluate_all(np.array(true_hr_matrices), np.array(predicted_hr_matrices), output_path='ID-randomCV22.csv')
+evaluate_all(np.array(true_hr_matrices), np.array(predicted_hr_matrices), output_path='ID-randomCV.csv')
 
 
    
