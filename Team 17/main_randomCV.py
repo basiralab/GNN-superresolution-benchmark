@@ -5,15 +5,13 @@ import torch
 import torch_geometric.transforms as T
 from torch_geometric.loader import DataLoader
 import torch.optim as optim
-import pandas as pd
-# from memory_profiler import profile
-from scripts.data import BrainTrain, BrainTest
+
+from scripts.data import BrainTrain
 from architecture.model import Model
-from scripts.train import train, evaluate, predict
-from scripts.evaluation_measures import calculate_evaluation_measures, plot_evaluation_measures
-from scripts.MatrixVectorizer import MatrixVectorizer as MV
+from scripts.train import train, evaluate
 from datetime import datetime
 from scripts import evaluation 
+
 # Set a fixed random seed for reproducibility across multiple libraries
 random_seed = 42
 random.seed(random_seed)
@@ -43,7 +41,6 @@ class MakeGaussianNodeFeatures:
         data.x = torch.normal(mean = self.mean, std = self.std, size = (data.num_nodes, self.num_features))
         return data
 
-# @profile
 def main():
     # Parameters
     now = datetime.now()
@@ -60,12 +57,6 @@ def main():
     parser.add_argument("--full_training", default=False, action="store_true")
 
     flags = parser.parse_args()
-
-    # Data
-    
-    print("Loading data...")
-    #train_transform = T.Compose([T.Constant(1)]*model_params["in_channels"])
-    #val_transform = T.Compose([T.Constant(1)]*model_params["in_channels"])
     
     num_features = model_params["in_channels"]
     train_transform = T.Compose([MakeGaussianNodeFeatures(mean = 1.0, std = 0.1, num_features = num_features)])
@@ -76,7 +67,6 @@ def main():
     best_epochs = []
 
     if not flags.full_training:
-        # eval_measures_list = []
         fold_rotation = [[0,1, 2], [1,2, 0], [2,0, 1]]
         for i in range(3): 
             print("Starting experiment no: {}".format(i))
@@ -97,7 +87,6 @@ def main():
             optimizer = optim.Adam(model.parameters(), lr=flags.lr)
 
             _, best_epoch = train(i, model, optimizer, train_dl, val_dl, device, flags)
-            # val_predictions, val_ground_truth = evaluate(model, val_dl, device)
             
             '''
             if flags.save_model:
@@ -110,9 +99,6 @@ def main():
 
             best_epochs.append(best_epoch)
         print(best_epochs)
-
-            # eval_measures_list.append(calculate_evaluation_measures(val_predictions.cpu(), val_ground_truth.cpu()))
-        # plot_evaluation_measures(eval_measures_list)
     
     if True:
         fold_rotation = [[0,1, 2], [1,2, 0], [2,0, 1]]
@@ -132,9 +118,9 @@ def main():
             test_dataset = dataset.get_fold_split(fold, test_transform, "test")
             test_dl = DataLoader(test_dataset, batch_size=flags.batch_size)
             test_predictions, test_ground_truth = evaluate(final_model, test_dl, device)
-            main_path = "/content/drive/My Drive/Deepen Your Goals in Life/"
+            main_path = "/content/drive/"
             
-            save_test_result_path = main_path + "Deepen-randomCV_" + str(i) + ".csv"
+            save_test_result_path = main_path + "randomCV_" + str(i) + ".csv"
             evaluation.evaluate_all(test_ground_truth.cpu().detach().numpy(), test_predictions.cpu().detach().numpy(), output_path = save_test_result_path)
 
             if flags.save_model:
@@ -144,56 +130,6 @@ def main():
                     else:
                         torch.save(final_model.state_dict(), f"{model_name}.pt", map_location=torch.device('cpu'))
     
-
-    '''
-    if flags.write_predictions:
-        if not flags.full_training:
-            for i in range(3):
-                # Load model
-                model = Model(model_params).to(device)
-                model.load_state_dict(torch.load(f"model_fold_{i}.pt"))
-
-                # Predict test data
-                print("Predicting test data...")
-                test_transform = val_transform
-                test_dataset = BrainTest(test_transform)
-                test_dl = DataLoader(test_dataset, batch_size=flags.batch_size)
-                predictions = predict(model, test_dl, device)
-
-                # Format test data
-                print("Formatting test data...")
-                predictions = predictions.cpu().numpy()
-                predictions_1d = []
-                for pred in predictions:
-                    predictions_1d.append(MV.vectorize(pred))
-                predictions_1d = np.stack(predictions_1d, axis=0)
-                assert predictions_1d.shape[0] == 112 and predictions_1d.shape[1] == 35778
-                predictions_1d = predictions_1d.flatten()
-                submission_df = pd.DataFrame({'ID': range(1, len(predictions_1d) + 1), 'Predicted': predictions_1d})
-                submission_df.to_csv(f"submission_fold_{i + 1}.csv", index=False)
-        else:
-            model = Model(model_params).to(device)
-            model.load_state_dict(torch.load(f"model_full.pt"))
-
-            # Predict test data
-            print("Predicting test data...")
-            test_transform = val_transform
-            test_dataset = BrainTest(test_transform)
-            test_dl = DataLoader(test_dataset, batch_size=flags.batch_size)
-            predictions = predict(model, test_dl, device)
-
-            # Format test data
-            print("Formatting test data...")
-            predictions = predictions.cpu().numpy()
-            predictions_1d = []
-            for pred in predictions:
-                predictions_1d.append(MV.vectorize(pred))
-            predictions_1d = np.stack(predictions_1d, axis=0)
-            assert predictions_1d.shape[0] == 112 and predictions_1d.shape[1] == 35778
-            predictions_1d = predictions_1d.flatten()
-            submission_df = pd.DataFrame({'ID': range(1, len(predictions_1d) + 1), 'Predicted': predictions_1d})
-            submission_df.to_csv(f"submission_full.csv", index=False)
-    '''
 
     stop = datetime.now()
     print("Time Elapse :", stop-now)

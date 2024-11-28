@@ -1,10 +1,7 @@
 import pandas as pd
 import torch
-import networkx as nx
 import numpy as np
-from sklearn.model_selection import KFold
 from scripts.MatrixVectorizer import MatrixVectorizer
-# from torch.utils.data import Dataset 
 from torch_geometric.data import Dataset, Data
 
 def onevector(matrices, latent_dim=10):
@@ -43,27 +40,22 @@ class BrainTrain():
         '''
            
     def get_fold_split(self, fold, transform, type= "train", ):
-        # train_val = 0 if type == "train" else 1
-        # indices = self.fold_indices[fold][train_val].tolist()
+
         
         if type == "train" or type == "val":
             lr_data_1 = pd.read_csv(self.main_path + self.lr_data_path[fold[0]]).to_numpy()
             hr_data_1 = pd.read_csv(self.main_path + self.hr_data_path[fold[0]]).to_numpy()
             lr_data_2 = pd.read_csv(self.main_path + self.lr_data_path[fold[1]]).to_numpy()
             hr_data_2 = pd.read_csv(self.main_path + self.hr_data_path[fold[1]]).to_numpy()
-            # lr_data_combined = np.vstack((lr_data_1,lr_data_2))
-            # hr_data_combined = np.vstack((hr_data_1,hr_data_2))
+
             if type == "train":
-                # self.lr_data = lr_data_combined[:lr_data_combined.shape[0]-20,:]
-                # self.hr_data = hr_data_combined[:hr_data_combined.shape[0]-20,:]
+
                 self.lr_data = np.vstack((lr_data_1[:lr_data_1.shape[0]-20,:],lr_data_2[:lr_data_2.shape[0]-20,:]))
                 self.hr_data = np.vstack((hr_data_1[:hr_data_1.shape[0]-20,:],hr_data_2[:hr_data_2.shape[0]-20,:]))
             elif type == "val":
-                # self.lr_data = lr_data_combined[-20:,:]
-                # self.hr_data = hr_data_combined[-20:,:]
+
                 self.lr_data = np.vstack((lr_data_1[-20:,:],lr_data_2[-20:,:]))
                 self.hr_data = np.vstack((hr_data_1[-20:,:],hr_data_2[-20:,:]))
-            
             
         elif type == "test":
             self.lr_data = pd.read_csv(self.main_path + self.lr_data_path[2]).to_numpy()
@@ -123,7 +115,6 @@ class Dummy(Dataset):
         return len(self.data_list)
 
 def BrainTest(transform):    
-    # lr_data = pd.read_csv("data/lr_test.csv").to_numpy()
     lr_data = pd.read_csv("3_fold_data/Test/lr_test.csv").to_numpy()
     mv = MatrixVectorizer()
             
@@ -140,14 +131,3 @@ def BrainTest(transform):
         out.append(data)
 
     return Dummy(out, transform)
-
-if __name__ == "__main__":
-    import torch_geometric.transforms as T
-    print(2)
-    # transform = T.Compose([T.Constant()])
-    # all_data = BrainTrain()
-    
-    # train_0 = all_data.get_fold_split(0, transform=transform)
-
-    # print(train_0[0])
-

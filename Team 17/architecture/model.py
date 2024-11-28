@@ -1,9 +1,7 @@
 import torch
 import torch.nn as nn
-import torch_geometric as geo
 import torch.nn.functional as F
 from architecture.GraphGoldNet import GraphGoldNet
-from torch_geometric.nn import GCNConv, BatchNorm, global_mean_pool
 
 
 class ConversionLayer(torch.nn.Module):
