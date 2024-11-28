@@ -2,9 +2,7 @@
 This file contains the Args class, which is used to store the arguments for the GUS-GAN model.
 """
 
-
 import constants
-
 
 class Args:
     def __init__(self):

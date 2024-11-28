@@ -1,10 +1,7 @@
 import numpy as np
-
 from set_seed import set_seed
 
 set_seed(42)
-
-
 def weight_variable_glorot(output_dim, input_dim=None):
     if input_dim is None:
         input_dim = output_dim

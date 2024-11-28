@@ -4,7 +4,6 @@ import numpy as np
 import torch
 from sklearn.model_selection import train_test_split
 
-import wandb
 from gan.config import Args
 from gan.model import GUS
 from gan.preprocessing import degree_normalisation, preprocess_data
@@ -15,14 +14,12 @@ from utils import load_csv_files
 
 set_seed(42)
 
-WANDB_API_KEY = "..."  # Replace with your own API key
 
 
 def hyperparameter_search(lr_train, lr_test, hr_train, hr_test, device):
     """
     A function to perform hyperparameter search using Weights and Biases
     """
-    wandb.login(key=WANDB_API_KEY)
 
     args = Args()
     args.device = device
@@ -51,11 +48,8 @@ def hyperparameter_search(lr_train, lr_test, hr_train, hr_test, device):
         }
     }
 
-    sweep_id = wandb.sweep(sweep_config, project="dgbl", entity="entity")
 
     def train(config=None):
-        with wandb.init(config=config):
-            config = wandb.config
             args.lr = config["lr"]
             args.hidden_dim = config["hidden_dim"]
             args.init_x_method = config["init_x_method"]
@@ -65,21 +59,12 @@ def hyperparameter_search(lr_train, lr_test, hr_train, hr_test, device):
             model = GUS(args.ks, args).to(device)
             model = train_model(model, lr_train, hr_train, args)
             scores = test_model(model, lr_test, hr_test, args)
-            wandb.log({"loss": scores})
-
-    wandb.agent(sweep_id, train, count=50)
-
-    wandb.finish()
 
 
 if __name__ == "__main__":
     """
     The main function to run the hyperparameter search. Load and preprocess the data, and then run the hyperparameter 
     search.
-    
-    To run this file, you will need to replace the WANDB_API_KEY with your own API key from Weights and Biases.
-    We do not recommend running this file locally, as it will take a long time to complete. Instead, we recommend 
-    using the university GPU cluster.
     """
 
     # Set a fixed random seed for reproducibility across multiple libraries

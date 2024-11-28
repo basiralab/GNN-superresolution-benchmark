@@ -5,13 +5,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import psutil
 import torch
-from sklearn.model_selection import KFold
-
 from Evaluator import evaluate
 from MatrixVectorizer import MatrixVectorizer
 from constants import *
 from set_seed import set_seed
-from evaluation import evaluate_all
 
 set_seed(42)
 

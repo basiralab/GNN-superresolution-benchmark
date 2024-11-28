@@ -1,12 +1,9 @@
 # Imports
 import torch
-from sklearn.model_selection import train_test_split
-
 from gan.config import Args
 from gan.model import GUS
-from gan.preprocessing import degree_normalisation, preprocess_data
-from gan.train import train as train_model
-from utils import load_csv_files, three_fold_cross_validation, save_csv_prediction, plot_evaluations
+from gan.preprocessing import degree_normalisation
+from utils import three_fold_cross_validation
 from set_seed import set_seed
 from evaluation import load_random_files
 
@@ -33,9 +30,6 @@ splits = load_random_files(args,return_matrix=True)
 # print the args
 print(args)
 
-#lr_train, lr_test, hr_train, hr_test = train_test_split(lr_train_data, hr_train_data, test_size=0.2, random_state=42)
-
-
 def model_init():
     model = GUS(args.ks, args).to(device)
     return model
@@ -45,18 +39,4 @@ def model_init():
 cv_scores = three_fold_cross_validation(model_init, splits, random_state=random_seed,
                                         verbose=True, prediction_vector=False, label_vector=False)
 
-#print(f"The average over the 3 folds is: {torch.mean(torch.tensor(cv_scores), dim=0)}")
-
-# Train the model on the whole dataset
-#model = GUS(args.ks, args).to(device)
-#model = train_model(model, lr_train_data, hr_train_data, args=args, verbose=True)  # train on the whole dataset
-# save the trained model
-#torch.save(model, "model.pth")
-
-# Test the model on the test set
-#lr_test_A, lr_test_X = preprocess_data(lr_test_data, args)
-#lr_test_data = torch.stack([lr_test_A, lr_test_X], dim=1)
-
-#lr_test_predictions = model.predict(lr_test_data)
-#save_csv_prediction(lr_test_predictions, logs=True, pred_matrix=True)
 print(cv_scores)

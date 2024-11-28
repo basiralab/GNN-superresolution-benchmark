@@ -4,13 +4,12 @@ import networkx as nx
 from scipy.stats import pearsonr
 from scipy.spatial.distance import jensenshannon
 from sklearn.metrics import mean_absolute_error
-from skimage.metrics import peak_signal_noise_ratio as psnr, structural_similarity as ssim
 import community.community_louvain as community_louvain
 import os
 from constants import *
 from MatrixVectorizer import MatrixVectorizer
 import torch
-from gan.preprocessing import degree_normalisation, preprocess_data
+from gan.preprocessing import preprocess_data
 
 def load_random_files(args, return_matrix=False, include_diagonal=False):
     lr_train1_data = np.genfromtxt("data/Cluster-CV/Fold1/lr_clusterA.csv", delimiter=",", skip_header=1)

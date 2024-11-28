@@ -6,7 +6,6 @@ from set_seed import set_seed
 
 set_seed(42)
 
-
 class GSRLayer(nn.Module):
 
     def __init__(self, lr_dim, hr_dim):

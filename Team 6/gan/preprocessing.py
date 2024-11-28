@@ -72,10 +72,6 @@ def unpad_HR_adj(label, split):
     return label[split:-split, split:-split]
 
 
-# The different normalisation functions we tried out. After experimenting with the different normalisation methods,
-# it was found that the degree normalisation method consistently produced the best results. This method divides the
-# adjacency matrix by the degree of each node in the graph.
-
 def degree_normalisation(G, adjacency):
     """
     Normalise the given adjacency matrix using the degree normalisation method.
