@@ -190,8 +190,6 @@ def train(model, subjects_adj, subjects_labels, val_subjects_adj, val_subjects_l
     return best_epoch
 
 
-
-
 def test(model_instance, test_data, model_parameters):
     predictions = []
 
